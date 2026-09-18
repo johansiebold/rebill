@@ -86,7 +86,7 @@ def header(
         Paragraph("Max Mustermann", field_value),
         Paragraph("0123 456 789", field_value),
         Paragraph("max.mustermann@e-mail.de", field_value),
-        Paragraph("# wie erstellen wir die klären", field_value),
+        Paragraph("123", field_value),
         Paragraph(invoice_date, field_value),
     ]
 
