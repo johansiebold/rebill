@@ -13,24 +13,25 @@ from config.styles import recipient, swb_address, field, field_value, subheader
 from config.styles import light_grey, blue
 from reportlab.lib.colors import white
 
+
 def paragraph_6_eeg_credit(
         turbine_id: str,
         production: float,
-        amount: float):
+        amount: float,
+        invoice_month: int):
     # Configuring
     invoice_date = datetime.datetime.today().strftime(format="%d.%m.%Y")
     invoice_date_for_saving = datetime.datetime.today().strftime(format="%y%m")
     invoice_year = datetime.datetime.today().strftime(format="%Y")
-    invoice_month = int(datetime.datetime.today().strftime(format="%m"))
 
     municipality = turbine_infos[turbine_id]["municipalities"][0]["name"]
 
     filename = Path(__file__).parent.parent / "credits" / f"{invoice_date_for_saving}_{turbine_id}_{municipality}.pdf"
 
     page_width, page_height = A4  # in Punkten (pt), nicht mm!
-    left_margin = 20*mm
-    right_margin = 10*mm
-    # Verfügbare Breite = Seitenbreite minus beide Ränder
+    left_margin = 20 * mm
+    right_margin = 10 * mm
+
     usable_width = page_width - left_margin - right_margin
 
     header_table = header(
@@ -112,16 +113,17 @@ def header(
 
     return header_table
 
+
 def current_month(
         turbine_id: str,
-    invoice_year: str,
+        invoice_year: str,
         invoice_month: int,
         production: float,
         amount: float,
         usable_width: float
 ):
     upper_section = [
-        Spacer(height=10*mm, width=1),
+        Spacer(height=10 * mm, width=1),
         Paragraph(f"Unsere Abrechnung für §6 EEG für {_month(invoice_month)} {invoice_year}", subheader),
         Paragraph("Guten Tag, "),
         Spacer(height=4 * mm, width=1),
@@ -163,6 +165,7 @@ def current_month(
 
     return upper_section + [position_table] + lower_section
 
+
 def _month(month_int: int) -> str:
     months_de = {
         1: "Januar", 2: "Februar", 3: "März", 4: "April",
@@ -170,6 +173,7 @@ def _month(month_int: int) -> str:
         9: "September", 10: "Oktober", 11: "November", 12: "Dezember",
     }
     return months_de[month_int]
+
 
 def _proper_number(number: float) -> str:
     integer, comma = f"{number:.2f}".split(".")

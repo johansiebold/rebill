@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Konfiguration</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+</head>
+<body>
+    <main class="container">
+        <nav>
+            <a href="/">Rechnung erstellen</a> | <a href="/configuration">Konfiguration</a>
+        </nav>
+
+        <h1>Anlagen und Gemeindeanteile</h1>
+
+        {% for turbine_id, info in turbines.items() %}
+            <article>
+                <h3>{{ turbine_id }} – {{ info.park }}</h3>
+                {% if info.municipalities %}
+                    <table>
+                        <tr><th>Gemeinde</th><th>Anteil</th><th>Empfänger</th><th>Straße</th><th>PLZ</th><th>IBAN</th></tr>
+                        {% for gemeinde in info.municipalities %}
+                            <tr>
+                                <td>{{ gemeinde.name }}</td>
+                                <td>{{ (gemeinde.share * 100) | round(2) }} %</td>
+                                <td>{{ gemeinde.billing_address1 }}</td>
+                                <td>{{ gemeinde.billing_address2 }}</td>
+                                <td>{{ gemeinde.billing_address3 }}</td>
+                                <td>{{ gemeinde.IBAN }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p><em>Keine Gemeinden hinterlegt.</em></p>
+                {% endif %}
+            </article>
+        {% endfor %}
+    </main>
+</body>
+</html>
