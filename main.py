@@ -1,49 +1,142 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
+from urllib.parse import quote
 
-from config.paragraph_6_eeg import turbine_infos
 from functions.calc import paragraph_6_eeg_due_amount
 from functions.pdf_creation import paragraph_6_eeg_credit
+from functions.loading import load_paragraph_6_eeg_infos, save_paragraph_6_eeg_infos
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/")
-async def formular_anzeigen(request: Request):
+@app.get("/create-bills")
+async def formular_anzeigen(request: Request, park: str | None = None):
+    turbine_infos = load_paragraph_6_eeg_infos()
+    parks = sorted({info["park"] for info in turbine_infos.values()})
+    selected_park = park or (parks[0] if parks else None)
+    turbines_gefiltert = {
+        tid: info for tid, info in turbine_infos.items()
+        if info["park"] == selected_park
+    }
     return templates.TemplateResponse(
-        request=request, name="formular.html", context={}
+        request=request,
+        name="create_bills.html",
+        context={"parks": parks, "selected_park": selected_park, "turbines": turbines_gefiltert},
     )
 
-
-# @app.post("/rechnung")
-# async def rechnung_erstellen(
-#     request: Request,
-#     turbine_id: str = Form(...),
-#     produktion: float = Form(...),
-# ):
-#     valid_production, amount = paragraph_6_eeg_due_amount(
-#         turbine_id=turbine_id,
-#         production=produktion,
-#         monthly_market_value=10,  # vorerst hartkodiert, später eigenes Feld
-#     )
-#     paragraph_6_eeg_credit(
-#         turbine_id=turbine_id,
-#         production=valid_production,
-#         amount=amount,
-#     )
-#     return templates.TemplateResponse(
-#         request=request,
-#         name="formular.html",
-#         context={"erfolg": True, "amount": amount},
-#     )
-
-
 @app.get("/configuration")
-async def show_configuration(request: Request):
+async def show_configuration(request: Request, park: str | None = None):
+    turbine_infos = load_paragraph_6_eeg_infos()
+    parks = sorted({info["park"] for info in turbine_infos.values()})
+    selected_park = park or (parks[0] if parks else None)
+    turbines_gefiltert = {
+        tid: info for tid, info in turbine_infos.items()
+        if info["park"] == selected_park
+    }
     return templates.TemplateResponse(
         request=request,
         name="configuration.html",
-        context={"turbines": turbine_infos},
+        context={"parks": parks, "selected_park": selected_park, "turbines": turbines_gefiltert},
     )
+
+@app.get("/configuration/{turbine_id}/add-municipality")
+async def show_add_municipality_form(request: Request, turbine_id: str):
+    return templates.TemplateResponse(
+        request=request,
+        name="add_municipality.html",
+        context={"turbine_id": turbine_id},
+    )
+
+@app.post("/configuration/{turbine_id}/add-municipality")
+async def add_municipality(
+    request: Request,
+    turbine_id: str,
+    name: str = Form(...),
+    billing_address1: str = Form(...),
+    billing_address2: str = Form(...),
+    billing_address3: str = Form(...),
+    iban: str = Form(...),
+    share: float = Form(...),
+):
+    turbine_infos = load_paragraph_6_eeg_infos()
+
+    bisherige_anteile = sum(
+        m["share"] for m in turbine_infos[turbine_id]["municipalities"]
+    )
+    if bisherige_anteile + share > 1.0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Anteile-Summe würde {bisherige_anteile + share:.2%} ergeben, maximal 100% erlaubt."
+        )
+
+    turbine_infos[turbine_id]["municipalities"].append({
+        "name": name,
+        "billing_address1": billing_address1,
+        "billing_address2": billing_address2,
+        "billing_address3": billing_address3,
+        "IBAN": iban,
+        "share": share,
+    })
+    park = turbine_infos[turbine_id]["park"]
+
+    save_paragraph_6_eeg_infos(data=turbine_infos)
+
+    return RedirectResponse(url=f"/configuration?park={quote(park)}", status_code=303)
+
+@app.get("/configuration/{turbine_id}/edit-municipality/{index}")
+async def show_edit_municipality_form(request: Request, turbine_id: str, index: int):
+    turbine_infos = load_paragraph_6_eeg_infos()
+    gemeinde = turbine_infos[turbine_id]["municipalities"][index]
+    return templates.TemplateResponse(
+        request=request,
+        name="edit_municipality.html",
+        context={"turbine_id": turbine_id, "index": index, "gemeinde": gemeinde},
+    )
+
+@app.post("/configuration/{turbine_id}/edit-municipality/{index}")
+async def edit_municipality(
+    request: Request,
+    turbine_id: str,
+    index: int,
+    name: str = Form(...),
+    billing_address1: str = Form(...),
+    billing_address2: str = Form(...),
+    billing_address3: str = Form(...),
+    iban: str = Form(...),
+    share: float = Form(...),
+):
+    turbine_infos = load_paragraph_6_eeg_infos()
+    municipalities = turbine_infos[turbine_id]["municipalities"]
+
+    andere_anteile = sum(
+        m["share"] for i, m in enumerate(municipalities) if i != index
+    )
+    if andere_anteile + share > 1.0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Anteile-Summe würde {andere_anteile + share:.2%} ergeben, maximal 100% erlaubt."
+        )
+
+    municipalities[index] = {
+        "name": name,
+        "billing_address1": billing_address1,
+        "billing_address2": billing_address2,
+        "billing_address3": billing_address3,
+        "IBAN": iban,
+        "share": share,
+    }
+    park = turbine_infos[turbine_id]["park"]
+
+    save_paragraph_6_eeg_infos(data=turbine_infos)
+    return RedirectResponse(url=f"/configuration?park={quote(park)}", status_code=303)
+
+@app.post("/configuration/{turbine_id}/delete-municipality/{index}")
+async def delete_municipality(request: Request, turbine_id: str, index: int):
+    turbine_infos = load_paragraph_6_eeg_infos()
+    park = turbine_infos[turbine_id]["park"]
+    del turbine_infos[turbine_id]["municipalities"][index]
+    save_paragraph_6_eeg_infos(data=turbine_infos)
+    return RedirectResponse(url=f"/configuration?park={quote(park)}", status_code=303)

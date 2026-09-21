@@ -1,0 +1,150 @@
+{
+  "E1150191": {
+    "park": "Ostwestfalen",
+    "value_to_be_applied": 9.1,
+    "municipalities": [
+      {
+        "name": "Bielefeld",
+        "billing_address1": "Stadt Bielefeld",
+        "billing_address2": "August-Bebel-Str. 5",
+        "billing_address3": "33604 Bielefeld",
+        "IBAN": "DE1234567890",
+        "share": 0.15
+      }
+    ]
+  },
+  "E1150192": {
+    "park": "Ostwestfalen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E1150193": {
+    "park": "Ostwestfalen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E1150194": {
+    "park": "Ostwestfalen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E1150195": {
+    "park": "Ostwestfalen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E58078": {
+    "park": "Brönninghausen 3&4",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E70794": {
+    "park": "Brönninghausen 3&4",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E78167": {
+    "park": "Schwaförden",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E78169": {
+    "park": "Schwaförden",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E78451": {
+    "park": "Mallinghausen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E78452": {
+    "park": "Mallinghausen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E78460": {
+    "park": "Mallinghausen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E824886": {
+    "park": "Mensinghausen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E824887": {
+    "park": "Mensinghausen",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E825812": {
+    "park": "Brönninghausen 1",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "V35037": {
+    "park": "Friedrichsdorf",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "V35038": {
+    "park": "Friedrichsdorf",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "AN1000-447-01": {
+    "park": "Borgholzhausen",
+    "value_to_be_applied": 9.1,
+    "municipalities": [
+      {
+        "name": "Test",
+        "billing_address1": "Test",
+        "billing_address2": "Test",
+        "billing_address3": "Test",
+        "IBAN": "123",
+        "share": 0.7
+      }
+    ]
+  },
+  "V218617": {
+    "park": "Hasselbach",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "V218618": {
+    "park": "Hasselbach",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "V218619": {
+    "park": "Hasselbach",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E207758": {
+    "park": "Schlüchtern",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E207759": {
+    "park": "Schlüchtern",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E207760": {
+    "park": "Schlüchtern",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E207761": {
+    "park": "Schlüchtern",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  },
+  "E207762": {
+    "park": "Schlüchtern",
+    "value_to_be_applied": 9.1,
+    "municipalities": []
+  }
+}

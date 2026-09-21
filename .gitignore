@@ -7,3 +7,5 @@ config/paragraph_6_eeg.py
 
 __pycache__/
 *.pyc
+
+.env

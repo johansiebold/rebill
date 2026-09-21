@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Gemeinde hinzufügen</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <style>
+        body { max-width: none; }
+    </style>
+</head>
+<body>
+    <main>
+        <nav>
+            <a href="/">Rechnung erstellen</a> | <a href="/configuration">Configuration</a>
+        </nav>
+
+        <h1>Gemeinde zu {{ turbine_id }} hinzufügen</h1>
+
+        <form method="post" action="/configuration/{{ turbine_id }}/add-municipality">
+            <input type="hidden" name="turbine_id" value="{{ turbine_id }}">
+
+            <label for="name">Gemeinde:</label>
+            <input type="text" name="name" id="name" required>
+
+            <label for="billing_address1">Anschrift Zeile 1:</label>
+            <input type="text" name="billing_address1" id="billing_address1" required>
+
+            <label for="billing_address2">Anschrift Zeile 2:</label>
+            <input type="text" name="billing_address2" id="billing_address2" required>
+
+            <label for="billing_address3">Anschrift Zeile 3 (PLZ Ort):</label>
+            <input type="text" name="billing_address3" id="billing_address3" required>
+
+            <label for="iban">IBAN:</label>
+            <input type="text" name="iban" id="iban" required>
+
+            <label for="share">Anteil (z.B. 0.15 für 15%):</label>
+            <input type="number" name="share" id="share" step="0.0001" min="0" max="1" required>
+
+            <button type="submit">Gemeinde speichern</button>
+        </form>
+    </main>
+</body>
+</html>

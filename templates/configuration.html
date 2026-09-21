@@ -4,37 +4,63 @@
     <meta charset="UTF-8">
     <title>Konfiguration</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <style>
+        body { max-width: none; }
+    </style>
 </head>
 <body>
-    <main class="container">
+    <main class="container-fluid">
         <nav>
-            <a href="/">Rechnung erstellen</a> | <a href="/configuration">Konfiguration</a>
+            <a href="/create-bills">Rechnung erstellen</a> | <a href="/configuration">Konfiguration</a>
         </nav>
+        <h1>Konfiguration</h1>
 
-        <h1>Anlagen und Gemeindeanteile</h1>
-
-        {% for turbine_id, info in turbines.items() %}
-            <article>
-                <h3>{{ turbine_id }} – {{ info.park }}</h3>
-                {% if info.municipalities %}
-                    <table>
-                        <tr><th>Gemeinde</th><th>Anteil</th><th>Empfänger</th><th>Straße</th><th>PLZ</th><th>IBAN</th></tr>
-                        {% for gemeinde in info.municipalities %}
-                            <tr>
-                                <td>{{ gemeinde.name }}</td>
-                                <td>{{ (gemeinde.share * 100) | round(2) }} %</td>
-                                <td>{{ gemeinde.billing_address1 }}</td>
-                                <td>{{ gemeinde.billing_address2 }}</td>
-                                <td>{{ gemeinde.billing_address3 }}</td>
-                                <td>{{ gemeinde.IBAN }}</td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% else %}
-                    <p><em>Keine Gemeinden hinterlegt.</em></p>
-                {% endif %}
-            </article>
-        {% endfor %}
+        <div style="display: flex; gap: 2rem;">
+            <nav style="min-width: 200px;">
+                <h2>Windparks</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                {% for p in parks %}
+                    <li>
+                        <a href="/configuration?park={{ p | urlencode }}"{% if p == selected_park %} style="font-weight: bold;"{% endif %}>
+                            {{ p }}
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </nav>
+            <div style="flex: 1;">
+                <h2>Anlagen und Gemeindeanteile</h2>
+                {% for turbine_id, info in turbines.items() %}
+                    <article>
+                        <h3>{{ turbine_id }} – {{ info.park }}</h3>
+                        {% if info.municipalities %}
+                            <table>
+                                <tr><th>Gemeinde</th><th>Anteil</th><th>Empfänger</th><th>Straße</th><th>PLZ</th><th>IBAN</th></tr>
+                                {% for gemeinde in info.municipalities %}
+                                    <tr>
+                                        <td>{{ gemeinde.name }}</td>
+                                        <td>{{ (gemeinde.share * 100) | round(2) }} %</td>
+                                        <td>{{ gemeinde.billing_address1 }}</td>
+                                        <td>{{ gemeinde.billing_address2 }}</td>
+                                        <td>{{ gemeinde.billing_address3 }}</td>
+                                        <td>{{ gemeinde.IBAN }}</td>
+                                        <td><a href="/configuration/{{ turbine_id }}/edit-municipality/{{ loop.index0 }}">bearbeiten</a></td>
+                                        <td>
+                                            <form method="post" action="/configuration/{{ turbine_id }}/delete-municipality/{{ loop.index0 }}" style="display: inline;" onsubmit="return confirm('Gemeinde wirklich löschen?')">
+                                                <button type="submit">löschen</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <p><em>Keine Gemeinden hinterlegt.</em></p>
+                        {% endif %}
+                        <a href="/configuration/{{ turbine_id }}/add-municipality">+ Gemeinde hinzufügen</a>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
     </main>
 </body>
 </html>
