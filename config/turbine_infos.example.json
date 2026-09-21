@@ -1,0 +1,39 @@
+{
+    "TURBINE_001": {
+        "park": "Windpark A",
+        "value_to_be_applied": 9.1,
+        "municipalities": [
+            {
+                "name": "Musterstadt",
+                "billing_address1": "Stadt Musterstadt",
+                "billing_address2": "Rathausplatz 1",
+                "billing_address3": "12345 Musterstadt",
+                "IBAN": "DE00000000000000000000",
+                "share": 0.15
+            },
+            {
+                "name": "Beispielhausen",
+                "billing_address1": "Gemeinde Beispielhausen",
+                "billing_address2": "Hauptstraße 6",
+                "billing_address3": "54321 Beispielhausen",
+                "IBAN": "DE00000000000000000000",
+                "share": 0.42
+            }
+        ]
+    },
+    "TURBINE_002": {
+        "park": "Windpark A",
+        "value_to_be_applied": 9.1,
+        "municipalities": []
+    },
+    "TURBINE_003": {
+        "park": "Windpark B",
+        "value_to_be_applied": 9.1,
+        "municipalities": []
+    },
+    "TURBINE_004": {
+        "park": "Windpark B",
+        "value_to_be_applied": 9.1,
+        "municipalities": []
+    }
+}
