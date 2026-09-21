@@ -4,8 +4,10 @@ graphics
 credits
 
 config/paragraph_6_eeg.py
+config/paragraph_6_eeg.json
 
 __pycache__/
 *.pyc
 
 .env
+
