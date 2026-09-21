@@ -86,16 +86,34 @@
   "V35037": {
     "park": "Friedrichsdorf",
     "value_to_be_applied": 9.1,
-    "municipalities": []
+    "municipalities": [
+      {
+        "name": "test",
+        "billing_address1": "test",
+        "billing_address2": "test",
+        "billing_address3": "test",
+        "IBAN": "123",
+        "share": 1.0
+      }
+    ]
   },
   "V35038": {
     "park": "Friedrichsdorf",
     "value_to_be_applied": 9.1,
-    "municipalities": []
+    "municipalities": [
+      {
+        "name": "test",
+        "billing_address1": "test",
+        "billing_address2": "test",
+        "billing_address3": "test",
+        "IBAN": "123",
+        "share": 1.0
+      }
+    ]
   },
   "AN1000-447-01": {
     "park": "Borgholzhausen",
-    "value_to_be_applied": 9.1,
+    "value_to_be_applied": 10.4,
     "municipalities": [
       {
         "name": "Test",

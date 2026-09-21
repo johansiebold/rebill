@@ -1,6 +1,5 @@
 import datetime
 
-from config.paragraph_6_eeg import turbine_infos
 from reportlab.platypus import SimpleDocTemplate, Table, Paragraph, TableStyle
 from pathlib import Path
 from reportlab.platypus import Spacer
@@ -15,10 +14,11 @@ from reportlab.lib.colors import white
 
 
 def paragraph_6_eeg_credit(
+        turbine_infos: dict,
         turbine_id: str,
         production: float,
         amount: float,
-        invoice_month: int):
+        invoice_month: str):
     # Configuring
     invoice_date = datetime.datetime.today().strftime(format="%d.%m.%Y")
     invoice_date_for_saving = datetime.datetime.today().strftime(format="%y%m")
@@ -41,6 +41,7 @@ def paragraph_6_eeg_credit(
     elements = [header_table]
 
     invoice_section = current_month(
+        turbine_infos=turbine_infos,
         turbine_id=turbine_id,
         invoice_year=invoice_year,
         invoice_month=invoice_month,
@@ -115,20 +116,21 @@ def header(
 
 
 def current_month(
+        turbine_infos: dict,
         turbine_id: str,
         invoice_year: str,
-        invoice_month: int,
+        invoice_month: str,
         production: float,
         amount: float,
         usable_width: float
 ):
     upper_section = [
         Spacer(height=10 * mm, width=1),
-        Paragraph(f"Unsere Abrechnung für §6 EEG für {_month(invoice_month)} {invoice_year}", subheader),
+        Paragraph(f"Unsere Abrechnung für §6 EEG für {invoice_month} {invoice_year}", subheader),
         Paragraph("Guten Tag, "),
         Spacer(height=4 * mm, width=1),
         Paragraph(f"im Rahmen Ihres Vertrages mit der Stadtwerke Bielefeld GmbH erhalten Sie heute Ihre Gutschrift für "
-                  f"den Zeitraum {_month(invoice_month)} {invoice_year}."),
+                  f"den Zeitraum {invoice_month} {invoice_year}."),
         Spacer(height=4 * mm, width=1)
     ]
 

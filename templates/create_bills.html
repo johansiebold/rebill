@@ -29,20 +29,25 @@
                 </ul>
             </nav>
             <div style="flex: 1;">
-                <label for="monthly_market_value">Monatsmarktwert (ct/kWh):</label>
-                <input type="number" name="monthly_market_value" id="monthly_market_value" step="0.01" required>
-                <h2>Vergütungsfähige Energiemengen</h2>
-                {% for turbine_id, info in turbines.items() %}
-                    <article>
-                        <h3>{{ turbine_id }} – {{ info.park }}</h3>
-                            <table>
-                                <tr>
-                                    <label for="produktion">Monatliche Produktion (kWh):</label>
-                                    <input type="number" name="produktion" id="produktion" step="0.01" required>
-                                </tr>
-                            </table>
-                    </article>
-                {% endfor %}
+                <form method="post" action="/create-bills/{{ selected_park | urlencode }}/create_bill">
+                    <label for="monthly_market_value">Monatsmarktwert [ct/kWh]:</label>
+                    <select name="invoice_month" id="invoice_month">
+                        {% for m, mw in monthly_market_values.items() %}
+                            <option value="{{ m }}">{{ m }} - {{ mw }} ct/kWh</option>
+                        {% endfor %}
+                    </select>
+
+                    <h2>Vergütungsfähige Energiemengen</h2>
+                    {% for turbine_id, info in turbines.items() %}
+                        <article>
+                            <h3>{{ turbine_id }} – {{ info.park }}</h3>
+                            <label for="production_{{ turbine_id }}">Monatliche Produktion (kWh):</label>
+                            <input type="number" name="production_{{ turbine_id }}" id="production_{{ turbine_id }}" step="0.01" required>
+                        </article>
+                    {% endfor %}
+
+                    <button type="submit">Abrechnung erstellen</button>
+                </form>
             </div>
         </div>
     </main>

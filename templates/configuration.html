@@ -33,6 +33,12 @@
                 {% for turbine_id, info in turbines.items() %}
                     <article>
                         <h3>{{ turbine_id }} – {{ info.park }}</h3>
+                            <form method="post" action="/configuration/{{ turbine_id }}/edit-turbine">
+                                <label for="value_to_be_applied_{{ turbine_id }}">Anzulegender Wert [ct/kWh]:</label>
+                                <input type="number" name="value_to_be_applied" id="value_to_be_applied_{{ turbine_id }}"
+                                       step="0.01" value="{{ info.value_to_be_applied }}"
+                                       onchange="this.form.submit()">
+                            </form>
                         {% if info.municipalities %}
                             <table>
                                 <tr><th>Gemeinde</th><th>Anteil</th><th>Empfänger</th><th>Straße</th><th>PLZ</th><th>IBAN</th></tr>

@@ -4,12 +4,15 @@ from urllib.parse import quote
 
 from functions.calc import paragraph_6_eeg_due_amount
 from functions.pdf_creation import paragraph_6_eeg_credit
+from functions.netztransparenz import get_monatsmarktwerte
 from functions.loading import load_paragraph_6_eeg_infos, save_paragraph_6_eeg_infos
 from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
+
+monthly_market_values = get_monatsmarktwerte()
 
 
 @app.get("/create-bills")
@@ -24,7 +27,8 @@ async def formular_anzeigen(request: Request, park: str | None = None):
     return templates.TemplateResponse(
         request=request,
         name="create_bills.html",
-        context={"parks": parks, "selected_park": selected_park, "turbines": turbines_gefiltert},
+        context={"parks": parks, "selected_park": selected_park, "turbines": turbines_gefiltert,
+                 "monthly_market_values": monthly_market_values},
     )
 
 @app.get("/configuration")
@@ -140,3 +144,42 @@ async def delete_municipality(request: Request, turbine_id: str, index: int):
     del turbine_infos[turbine_id]["municipalities"][index]
     save_paragraph_6_eeg_infos(data=turbine_infos)
     return RedirectResponse(url=f"/configuration?park={quote(park)}", status_code=303)
+
+@app.post("/create-bills/{park}/create_bill")
+async def create_bill(request: Request, park: str):
+    turbine_infos = load_paragraph_6_eeg_infos()
+    turbines = {t: i for t, i in turbine_infos.items() if i["park"] == park}
+
+    form = await request.form()
+
+    for turbine_id, i in turbines.items():
+        production = float(form[f"production_{turbine_id}"])
+        invoice_month = form["invoice_month"]
+        monthly_market_value = monthly_market_values[invoice_month]
+
+        considered_production, amount = paragraph_6_eeg_due_amount(
+            turbine_infos=turbine_infos,
+            turbine_id=turbine_id,
+            production=production,
+            monthly_market_value=monthly_market_value
+        )
+
+        paragraph_6_eeg_credit(
+            turbine_infos=turbine_infos,
+            turbine_id=turbine_id,
+            production=considered_production,
+            amount=amount,
+            invoice_month=invoice_month
+        )
+
+
+    return RedirectResponse(url=f"/create-bills?park={quote(park)}", status_code=303)
+
+@app.post("/configuration/{turbine_id}/edit-turbine")
+async def edit_turbine(request: Request, turbine_id: str, value_to_be_applied: float = Form(...)):
+    turbine_infos = load_paragraph_6_eeg_infos()
+    turbine_infos[turbine_id]["value_to_be_applied"] = value_to_be_applied
+    park = turbine_infos[turbine_id]["park"]
+    save_paragraph_6_eeg_infos(data=turbine_infos)
+    return RedirectResponse(url=f"/configuration?park={quote(park)}", status_code=303)
+

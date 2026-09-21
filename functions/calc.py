@@ -1,11 +1,10 @@
-from config.paragraph_6_eeg import turbine_infos
-
-
 def paragraph_6_eeg_due_amount(
+        turbine_infos: dict,
         turbine_id: str,
         production: float,
         monthly_market_value: float) -> tuple[float, float]:
     _check_paragraph_6_eeg_due_amount_inputs(
+        turbine_infos=turbine_infos,
         turbine_id=turbine_id,
         production=production,
         monthly_market_value=monthly_market_value)
@@ -18,6 +17,7 @@ def paragraph_6_eeg_due_amount(
 
 
 def _check_paragraph_6_eeg_due_amount_inputs(
+        turbine_infos: dict,
         turbine_id: str,
         production: float,
         monthly_market_value: float) -> None:
